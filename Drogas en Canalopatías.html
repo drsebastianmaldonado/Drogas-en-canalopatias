@@ -1,0 +1,628 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Drogas en Canalopatías</title>
+<style>
+/* Layout: columna única tipo iOS (inset grouped), encabezado con banda en degradé y datos del médico, control segmentado QT largo / Brugada y fichas por fármaco (mismo formato que Fallas del Marcapasos Transitorio y Manejo de arritmias en el POP) */
+:root{
+  --bg:#f2f2f7;
+  --card:#ffffff;
+  --ink:#0b0b10;
+  --ink2:#6c6c74;
+  --line:#e3e3e8;
+  --blue:#0a74f0;
+  --blue-soft:#e4f0ff;
+  --green:#1faa4a;
+  --orange:#d97a00;
+  --red:#e0352b;
+  --yellow:#a67c00;
+  --seg:#e4e4ea;
+  --seg-on:#ffffff;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 6px 20px rgba(0,0,0,.05);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#000;--card:#1c1c1e;--ink:#f5f5f7;--ink2:#9c9ca4;--line:#2e2e32;--blue:#4aa3ff;--blue-soft:#10263d;
+  --green:#30d158;--orange:#ffa733;--red:#ff6259;--yellow:#c9a21a;
+  --seg:#1c1c1e;--seg-on:#3a3a3e;--shadow:none;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#000;--card:#1c1c1e;--ink:#f5f5f7;--ink2:#9c9ca4;--line:#2e2e32;--blue:#4aa3ff;--blue-soft:#10263d;
+  --green:#30d158;--orange:#ffa733;--red:#ff6259;--yellow:#c9a21a;
+  --seg:#1c1c1e;--seg-on:#3a3a3e;--shadow:none;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.4;-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;display:flex;flex-direction:column;gap:18px}
+.card{background:var(--card);border-radius:20px;box-shadow:var(--shadow);min-width:0}
+
+/* encabezado: banda con degradé suave, ícono, título grande y datos del médico */
+.hero{--hc:var(--blue);margin:-20px -16px 0;padding:44px 20px 26px;border-radius:0 0 32px 32px;background:linear-gradient(165deg,color-mix(in srgb,var(--hc) 30%,var(--bg)),color-mix(in srgb,var(--hc) 6%,var(--bg)))}
+.hicon{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;color:#fff;background:linear-gradient(135deg,var(--hc),color-mix(in srgb,var(--hc) 62%,#000));box-shadow:0 6px 16px color-mix(in srgb,var(--hc) 35%,transparent)}
+.hicon svg{width:26px;height:26px}
+.hero h1{margin:16px 0 6px;font-size:clamp(32px,9.4vw,40px);font-weight:800;letter-spacing:-.035em;line-height:1.06;text-wrap:balance}
+.hero .sub{margin:0;color:var(--ink2);font-size:16px;max-width:44ch}
+.prof{margin:0;padding:11px 0 13px;border-top:.5px solid var(--line);border-bottom:.5px solid var(--line)}
+.pname{font-size:15px;font-weight:600}
+.prole{font-size:12px;line-height:1.35;color:var(--ink2);margin-top:1px;max-width:44ch}
+.pact{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:9px}
+.wa{display:inline-flex;align-items:center;gap:8px;background:#1f9d55;color:#fff;border-radius:99px;padding:7px 13px;min-height:0;font-size:13px;font-weight:600;text-decoration:none}
+.wa svg{width:15px;height:15px}
+.wa:active{opacity:.75}
+.mailbtn{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);min-width:0;appearance:none;border:0;background:none;font-family:inherit;padding:0;cursor:pointer;text-align:left}
+.mailtxt{user-select:all;overflow-wrap:anywhere}
+.mailcp{color:var(--blue);flex:none;display:grid;place-items:center;width:24px;height:24px}
+.mailcp svg{width:15px;height:15px}
+
+.btn{appearance:none;border:0;background:var(--blue-soft);color:var(--blue);font:inherit;font-weight:600;font-size:14px;border-radius:999px;padding:8px 14px;cursor:pointer;min-height:36px}
+.btn:active{opacity:.6}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* controles fijos: segmentado + búsqueda */
+.ctrl{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin:0 -16px;padding:8px 16px 10px;display:flex;flex-direction:column;gap:10px}
+.seg{display:grid;grid-template-columns:repeat(2,1fr);background:var(--seg);border-radius:12px;padding:3px;gap:2px}
+.seg button{appearance:none;border:0;background:transparent;color:var(--ink);font:inherit;font-weight:700;font-size:16px;padding:10px 0;border-radius:9px;cursor:pointer;letter-spacing:.01em;transition:background .2s,box-shadow .2s}
+.seg button[aria-selected="true"]{background:var(--seg-on);box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.search{display:flex;align-items:center;gap:8px;background:var(--seg);border-radius:12px;padding:0 12px}
+.search svg{flex:none;width:18px;height:18px;color:var(--ink2)}
+.search input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:17px;padding:12px 0;outline:none;-webkit-appearance:none;appearance:none}
+.search input::placeholder{color:var(--ink2)}
+.search .x{appearance:none;border:0;background:none;color:var(--ink2);font-size:22px;line-height:1;padding:4px 6px;cursor:pointer}
+.meta{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-inline:4px;font-size:13px;color:var(--ink2)}
+.meta b{font-weight:600;font-variant-numeric:tabular-nums}
+.meta .ex button{appearance:none;border:0;background:none;color:var(--blue);font:inherit;font-size:13px;padding:2px 4px;cursor:pointer}
+
+/* fichas */
+.list{display:flex;flex-direction:column;gap:12px}
+.drug{display:flex;align-items:flex-start;gap:14px;padding:14px 16px}
+.badge{flex:none;min-width:58px;text-align:center;padding:8px 10px;border-radius:12px;color:#fff;font-weight:700;font-size:15px;letter-spacing:.04em;line-height:1.1;background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 62%,#000))}
+.badge small{display:block;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.85;margin-bottom:2px}
+.k1{--c:var(--red)}.k2{--c:var(--orange)}.k3{--c:var(--yellow)}.k4{--c:var(--blue)}
+.dbody{flex:1;min-width:0}
+.dname{font-size:17px;font-weight:600;letter-spacing:-.01em;overflow-wrap:anywhere}
+.dalias{color:var(--ink2);font-weight:400;font-size:14px}
+.dbrand{color:var(--ink2);font-size:13px;margin-top:1px;overflow-wrap:anywhere}
+.dstate{margin-top:6px;font-size:14px;font-weight:600}
+.ddet{margin-top:2px;font-size:13px;color:var(--ink2);overflow-wrap:anywhere}
+.empty{padding:20px 16px;display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.empty b{font-size:17px}
+.empty p{margin:0;color:var(--ink2);font-size:14px}
+.more{appearance:none;border:0;align-self:center;background:var(--blue-soft);color:var(--blue);font:inherit;font-weight:600;font-size:15px;border-radius:999px;padding:11px 20px;cursor:pointer}
+.more:active{opacity:.6}
+
+/* leyenda */
+.legend summary{cursor:pointer;padding:14px 16px;font-weight:600;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.legend summary::-webkit-details-marker{display:none}
+.legend summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);margin-right:4px;transition:transform .25s}
+.legend[open] summary::after{transform:rotate(-135deg)}
+.legend dl{margin:0;padding:0 16px 14px;display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:14px}
+.legend dt{font-weight:700;white-space:nowrap}
+.legend dd{margin:0;color:var(--ink2)}
+.foot{font-size:12px;color:var(--ink2);text-align:center;padding-inline:8px;display:flex;flex-direction:column;gap:6px}
+.foot a{color:var(--blue)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<main class="wrap">
+  <header class="hero">
+    <span class="hicon"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13h5l2.5-7 4 14 2.5-7h8"/></svg></span>
+    <h1>Drogas en canalopatías</h1>
+    <p class="sub">Buscá un fármaco y mirá si figura en la lista de QT largo congénito o en la de Brugada</p>
+  </header>
+
+  <section class="prof" aria-label="Contacto"><div class="pname">Dr. Sebastián Maldonado</div><div class="prole">Electrofisiólogo infantil · Htal. JP Garrahan y Hospital Italiano de Buenos Aires</div>
+    <div class="pact"><a class="wa" href="https://wa.me/5491131860600?text=Hola%20Dr.%20Maldonado%2C%20te%20escribo%20por%20una%20interconsulta%20sobre%20un%20paciente%20con%20canalopat%C3%ADa." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.700 6.700 0 0 1-3.300-2.900c-.2-.4.2-.4.700-1.300.1-.2 0-.3 0-.4l-.8-1.800c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.300-.9.900-.9 2.200s.9 2.500 1 2.700c.1.2 1.800 2.800 4.400 3.900 1.600.7 2.300.800 3.100.700.5-.1 1.500-.6 1.700-1.200.2-.6.2-1.100.2-1.200-.1-.1-.3-.2-.5-.3z"/></svg>Interconsulta por WhatsApp</a>
+    <button class="mailbtn" id="copy" type="button" aria-label="Copiar mail"><span class="mailtxt" id="mailtxt">drsebastian.maldonado@gmail.com</span><span class="mailcp" id="mailcp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.500 2.500 0 0 1 7.500 4H15"/></svg></span></button></div></section>
+
+  <div class="ctrl">
+    <div class="seg" role="tablist" aria-label="Lista de fármacos">
+      <button type="button" role="tab" id="tab-qt" data-tab="qt" aria-selected="true">QT largo</button>
+      <button type="button" role="tab" id="tab-br" data-tab="br" aria-selected="false">Brugada</button>
+    </div>
+    <label class="search" for="q">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Buscar fármaco o nombre comercial" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Buscar fármaco">
+      <button class="x" id="clr" type="button" aria-label="Borrar búsqueda" hidden>×</button>
+    </label>
+    <div class="meta"><span id="count" aria-live="polite"></span><span class="ex" id="ex"></span></div>
+  </div>
+
+  <section class="list" id="list" role="tabpanel" aria-label="Resultados"></section>
+
+  <details class="card legend">
+    <summary>Cómo leer las categorías</summary>
+    <dl id="legend"></dl>
+  </details>
+
+  <footer class="foot">
+    <span id="src"></span>
+    <span>Que un fármaco no figure en una lista no significa que sea seguro: muchos no fueron evaluados. Las listas se actualizan; confirmá en crediblemeds.org y brugadadrugs.org. Es una ayuda de consulta y no reemplaza el criterio clínico.</span>
+    <span>Interconsultas: <a href="https://wa.me/5491131860600" target="_blank" rel="noopener">WhatsApp del Dr. Maldonado</a></span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var QT = [
+"Abarelix|Plenaxis|PR|",
+"Abiraterone|Zytiga|CR|abiraterona",
+"Aclarubicin|Aclacin|KR|",
+"Adagrasib|Krazati|PR|",
+"Albuterol (salbutamol)|Proventil|SR|salbutamol",
+"Alfuzosin|Uroxatral|PR|alfuzosina",
+"Alimemazine (Trimeprazine)|Nedeltran|PR|trimeprazina",
+"Amantadine|Symmetrel|CR|amantadina",
+"Amiodarone|Cordarone|KR|amiodarona",
+"Amisulpride|Barhemsys|CR|amisulprida",
+"Amitriptyline|Elavil|CR|amitriptilina",
+"Amphetamine (Amfetamine)|Adderall-XR|SR|anfetamina",
+"Amphotericin B|Fungilin|CR|anfotericina",
+"Amsacrine (Acridinyl anisidide)|Amsidine|CR|",
+"Anagrelide|Agrylin|KR|anagrelida",
+"Apalutamide|Erleada|PR|",
+"Apomorphine|Apokyn|PR|apomorfina",
+"Arformoterol|Brovana|SR|",
+"Aripiprazole|Abilify|PR|aripiprazol",
+"Arsenic trioxide|Trisenox|KR|trioxido de arsenico",
+"Artemether/Lumefantrine|Coartem|PR|",
+"Artenimol/piperaquine|Eurartesim|PR|",
+"Asenapine|Saphris|PR|asenapina",
+"Astemizole|Hismanal|KR|astemizol",
+"Atazanavir|Reyataz|CR|",
+"Atomoxetine|Strattera|PR|atomoxetina",
+"Azithromycin|Zithromax|KR|azitromicina",
+"Bedaquiline|Sirturo|PR|",
+"Bendamustine|Treanda|PR|bendamustina",
+"Bendroflumethiazide (Bendrofluazide)|Aprinox|CR|",
+"Benzphetamine|Didrex|SR|",
+"Bepridil|Vascor|KR|",
+"Betrixaban|Bevyxxa|PR|",
+"Bicalutamide|Casodex|PR|bicalutamida",
+"Bortezomib|Velcade|PR|",
+"Bosutinib|Bosulif|PR|",
+"Buprenorphine|Butrans|PR|buprenorfina",
+"Cabozantinib|Cometriq|PR|",
+"Capecitabine|Xeloda|PR|capecitabina",
+"Carbetocin|Pabal|PR|carbetocina",
+"Ceritinib|Zykadia|PR|",
+"Cesium Chloride|Energy Catalyst|KR|cloruro de cesio",
+"Chloral hydrate|Aquachloral|CR|hidrato de cloral",
+"Chloroquine|Aralen|KR|cloroquina",
+"Chlorpromazine|Thorazine|KR|clorpromazina",
+"Chlorprothixene|Truxal|KR|clorprotixeno",
+"Cilostazol|Pletal|KR|cilostazol",
+"Cimetidine|Tagamet|CR|cimetidina",
+"Ciprofloxacin|Cipro|KR|ciprofloxacina",
+"Cisapride|Propulsid|KR|cisaprida",
+"Citalopram|Celexa|KR|citalopram",
+"Clarithromycin|Biaxin|KR|claritromicina",
+"Clofazimine|Lamprene|CR|clofazimina",
+"Clomipramine|Anafranil|CR|clomipramina",
+"Clotiapine|Entumine|PR|clotiapina",
+"Clozapine|Clozaril|PR|clozapina",
+"Cobimetinib|Cotellic|PR|",
+"Cocaine|Cocaine|KR|cocaina",
+"Crizotinib|Xalkori|PR|",
+"Cyamemazine (Cyamepromazine)|Tercian|PR|ciamemazina",
+"Dabrafenib|Tafinlar|PR|",
+"Dasatinib|Sprycel|PR|",
+"Degarelix|Firmagon|PR|",
+"Delamanid|Deltyba|PR|",
+"Desipramine|Pertofrane|PR|desipramina",
+"Dexmedetomidine|Precedex|PR|dexmedetomidina",
+"Dexmethylphenidate|Focalin|SR|",
+"Dextroamphetamine (Dexamfetamine)|Dexedrine|SR|dextroanfetamina",
+"Dextromethorphan/Quinidine|Nuedexta|PR|",
+"Diethylpropion (amfepramone)|Tenuate|SR|",
+"Diltiazem|Cardizem|CR|diltiazem",
+"Diphenhydramine|Benadryl|CR|difenhidramina",
+"Disopyramide|Norpace|KR|disopiramida",
+"Dobutamine|Dobutrex|SR|dobutamina",
+"Dofetilide|Tikosyn|KR|dofetilida",
+"Dolasetron|Anzemet|PR|dolasetron",
+"Domperidone|Motilium|KR|domperidona",
+"Donepezil|Aricept|KR|donepezilo",
+"Dopamine|Intropin|SR|dopamina",
+"Doxepin|Sinequan|CR|doxepina",
+"Dronedarone|Multaq|KR|dronedarona",
+"Droperidol|Inapsine|KR|droperidol",
+"Droxidopa|Northera|SR|",
+"Efavirenz|Sustiva|PR|efavirenz",
+"Eliglustat|Cerdelga|PR|",
+"Encorafenib|Braftovi|PR|",
+"Entrectinib|Rozlytrek|PR|",
+"Eperisone|Myonal|CR|",
+"Ephedrine|Rynatuss|SR|efedrina",
+"Epinephrine (Adrenaline)|Primatene|SR|adrenalina epinefrina",
+"Epirubicin|Ellence|PR|epirrubicina",
+"Eribulin mesylate|Halaven|PR|",
+"Erythromycin|E.E.S.|KR|eritromicina",
+"Escitalopram|Cipralex|KR|escitalopram",
+"Esomeprazole|Nexium|CR|esomeprazol",
+"Ezogabine (Retigabine)|Potiga|PR|",
+"Famotidine|Pepcid|CR|famotidina",
+"Felbamate|Felbatol|PR|felbamato",
+"Fenfluramine|Fintepla|SR|fenfluramina",
+"Fenoterol|Berotec|SR|",
+"Fexinidazole|Fexinidazole|PR|",
+"Fingolimod|Gilenya|PR|",
+"Flecainide|Tambocor|KR|flecainida",
+"Fluconazole|Diflucan|KR|fluconazol",
+"Fluorouracil (5-FU)|Adrucil|PR|fluorouracilo",
+"Fluoxetine|Prozac|CR|fluoxetina",
+"Flupentixol|Depixol|PR|",
+"Fluticasone And Salmeterol|Advair|SR|fluticasona salmeterol",
+"Fluvoxamine|Faverin|CR|fluvoxamina",
+"Formoterol|Foradil|SR|formoterol",
+"Furosemide (frusemide)|Lasix|CR|furosemida",
+"Galantamine|Reminyl|CR|galantamina",
+"Garenoxacin|Geninax|CR|",
+"Gatifloxacin|Tequin|KR|gatifloxacina",
+"Gemifloxacin|Factive|PR|",
+"Gepirone|Exxua|PR|",
+"Gilteritinib|Xospata|PR|",
+"Givinostat|Duvyzat|PR|",
+"Glasdegib|Daurismo|PR|",
+"Granisetron|Kytril|PR|granisetron",
+"Grepafloxacin|Raxar|KR|",
+"Halofantrine|Halfan|KR|halofantrina",
+"Haloperidol|Haldol|KR|haloperidol",
+"Hydrochlorothiazide|Apo-Hydro|CR|hidroclorotiazida",
+"Hydrocodone - ER|Hysingla ER|PR|hidrocodona",
+"Hydroquinidine (Dihydroquinidine)|Serecor|KR|hidroquinidina",
+"Hydroxychloroquine|Plaquenil|KR|hidroxicloroquina",
+"Hydroxyzine|Atarax|CR|hidroxizina",
+"Ibogaine||KR|ibogaina",
+"Ibutilide|Corvert|KR|ibutilida",
+"Iloperidone|Fanapt|PR|iloperidona",
+"Imatinib|Gleevec|PR|imatinib",
+"Imipramine (Melipramine)|Tofranil|PR|imipramina",
+"Indacaterol|Arcapta Neohaler|SR|",
+"Indapamide|Lozol|CR|indapamida",
+"Inotuzumab ozogamicin|Besponsa|PR|",
+"Isoflurane|Forane|PR|isoflurano",
+"Isoproterenol (isoprenaline)|Medihaler-Iso|SR|isoproterenol isoprenalina",
+"Isradipine|Dynacirc|PR|isradipina",
+"Itraconazole|Sporanox|CR|itraconazol",
+"Ivabradine|Procoralan|KR|ivabradina",
+"Ivosidenib|Tibsovo|PR|",
+"Ketanserin|Sufrexal|PR|ketanserina",
+"Ketoconazole|Nizoral|CR|ketoconazol",
+"Lacidipine|Lacipil|PR|lacidipina",
+"Lansoprazole|Prevacid|CR|lansoprazol",
+"Lapatinib|Tykerb|PR|",
+"Lefamulin|Xenleta|PR|",
+"Lenvatinib|Lenvima|PR|",
+"Leuprolide (Leuprorelin)|Lupron|PR|leuprolida leuprorelina",
+"Levalbuterol (Levsalbutamol)|Xopenex|SR|levosalbutamol",
+"Levofloxacin|Levaquin|KR|levofloxacina",
+"Levoketoconazole|Recorlev|PR|",
+"Levomepromazine (Methotrimeprazine)|Nosinan|KR|levomepromazina",
+"Levomethadone (levamethadone)||PR|levometadona",
+"Levomethadyl acetate|Orlaam|KR|",
+"Levomethamphetamine (Levmetamfetamine)|Sinu Inhaler|SR|",
+"Levosulpiride|Lesuride|KR|levosulpirida",
+"Lisdexamfetamine|Vyvanse|SR|lisdexanfetamina",
+"Lithium|Eskalith|PR|litio",
+"Lofexidine|Lucemyra|PR|",
+"Loperamide|Imodium|CR|loperamida",
+"Lopinavir/Ritonavir|Kaletra|PR|lopinavir ritonavir",
+"Lumateperone|Caplyta|PR|",
+"Lurasidone|Latuda|PR|lurasidona",
+"Macimorelin|Macrilen|PR|",
+"Maprotiline|Ludiomil|PR|maprotilina",
+"Mavorixafor|Xolremdi|PR|",
+"Meglumine antimoniate|Glucantime|KR|antimoniato de meglumina",
+"Melperone|Bunil|PR|",
+"Mesoridazine|Serentil|KR|",
+"Metaproterenol (Orciprenaline)|Metaprel|SR|orciprenalina",
+"Methadone|Dolophine|KR|metadona",
+"Methamphetamine (Metamfetamine)|Desoxyn|SR|metanfetamina",
+"Methylphenidate|Ritalin|SR|metilfenidato",
+"Metoclopramide|Reglan|CR|metoclopramida",
+"Metolazone|Zytanix|CR|metolazona",
+"Metronidazole|Flagyl|CR|metronidazol",
+"Mianserin|Tolvon|PR|mianserina",
+"Midodrine|ProAmatine|SR|midodrina",
+"Midostaurin|Rydapt|PR|",
+"Mifepristone|Korlym|PR|mifepristona",
+"Mirabegron|Myrbetriq|PR|",
+"Mirtazapine|Remeron|PR|mirtazapina",
+"Mobocertinib|Exkivity|KR|",
+"Moclobemide|Amira|PR|moclobemida",
+"Motixafortide|Aphexda|PR|",
+"Moxifloxacin|Avelox|KR|moxifloxacina",
+"Necitumumab|Portrazza|PR|",
+"Nelfinavir|Viracept|CR|",
+"Nicardipine|Cardene|PR|nicardipina",
+"Nifekalant|Shinbit|KR|",
+"Nilotinib|Tasigna|PR|nilotinib",
+"Norepinephrine|Levophed|SR|noradrenalina norepinefrina",
+"Norfloxacin|Noroxin|PR|norfloxacina",
+"Nortriptyline|Pamelor|PR|nortriptilina",
+"Nusinersen|Spinraza|PR|",
+"Ofloxacin|Floxin|PR|ofloxacina",
+"Olanzapine|Zyprexa|CR|olanzapina",
+"Oliceridine|Olinvyk|PR|",
+"Olodaterol|Striverdi Respimat|SR|",
+"Omeprazole|Losec|CR|omeprazol",
+"Ondansetron|Zofran|KR|ondansetron",
+"Opipramol|Deprenil|PR|",
+"Osilodrostat|Isturisa|PR|",
+"Osimertinib|Tagrisso|KR|",
+"Oxaliplatin|Eloxatin|KR|oxaliplatino",
+"Oxymetazoline|Afrin|SR|oximetazolina",
+"Oxytocin|Pitocin|PR|oxitocina",
+"Ozanimod|Zeposia|PR|",
+"Pacritinib|Vonjo|PR|",
+"Paliperidone|Invega|PR|paliperidona",
+"Palonosetron|Aloxi|PR|palonosetron",
+"Panobinostat|Farydak|PR|",
+"Pantoprazole|Protonix|CR|pantoprazol",
+"Papaverine HCl (Intracoronary)|ParaTime SR|KR|papaverina",
+"Paroxetine|Paxil|CR|paroxetina",
+"Pasireotide|Signifor|PR|",
+"Pazopanib|Votrient|PR|",
+"Pentamidine|Pentam|KR|pentamidina",
+"Perphenazine|Trilafon|PR|perfenazina",
+"Phendimetrazine|Bontril|SR|",
+"Phentermine|Adipex P|SR|fentermina",
+"Phenylephrine|Neosynephrine|SR|fenilefrina",
+"Phenylpropanolamine|Acutrim|SR|fenilpropanolamina",
+"Pilsicainide|Sunrythm|PR|pilsicainida",
+"Pimavanserin|Nuplazid|PR|",
+"Pimozide|Orap|KR|pimozida",
+"Pipamperone|Dipiperon|PR|",
+"Piperacillin/Tazobactam|Tazosyn|CR|piperacilina tazobactam",
+"Pitolisant (Tiprolisant)|Wakix|PR|",
+"Ponesimod|Ponvory|PR|",
+"Posaconazole|Noxafil|CR|posaconazol",
+"Pralsetinib|Gavreto|PR|",
+"Pretomanid|Dovprela|PR|",
+"Primaquine phosphate|Jasoprim|PR|primaquina",
+"Probucol|Lorelco|KR|",
+"Procainamide|Pronestyl|KR|procainamida",
+"Promethazine|Phenergan|PR|prometazina",
+"Propafenone|Rythmol SR|CR|propafenona",
+"Propofol|Diprivan|KR|propofol",
+"Prothipendyl|Dominal|PR|",
+"Pseudoephedrine|PediaCare|SR|pseudoefedrina",
+"Quetiapine|Seroquel|CR|quetiapina",
+"Quinidine|Quinaglute|KR|quinidina",
+"Quinine sulfate|Qualaquin|CR|quinina",
+"Quizartinib|Vanflyta|KR|",
+"Ranolazine|Ranexa|CR|ranolazina",
+"Relugolix|Orgovyx|PR|",
+"Remdesivir|Veklury|PR|remdesivir",
+"Remimazolam|Byfavo|PR|",
+"Revumenib|Revuforj|PR|",
+"Ribociclib|Kisqali|PR|",
+"Rilpivirine|Edurant|PR|",
+"Risperidone|Risperdal|CR|risperidona",
+"Ritodrine|Yutopar|SR|ritodrina",
+"Rivastigmine|Exelon|PR|rivastigmina",
+"Romidepsin|Istodax|PR|",
+"Roxithromycin|Rulide|KR|roxitromicina",
+"Rucaparib|Rubraca|PR|",
+"Salmeterol|Serevent|SR|salmeterol",
+"Saquinavir (with ritonavir)|Invirase|PR|saquinavir",
+"Selpercatinib|Retevmo|PR|",
+"Serdexmethylphenidate|Azstarys|SR|",
+"Sertindole|Serdolect|KR|sertindol",
+"Sertraline|Zoloft|CR|sertralina",
+"Sevoflurane|Ultane|KR|sevoflurano",
+"Sibutramine|Meridia|SR|sibutramina",
+"Siponimod|Mayzent|PR|",
+"Sitafloxacin|Gracevit|PR|",
+"Solifenacin|Vesicare|CR|solifenacina",
+"Sorafenib|Nexavar|PR|sorafenib",
+"Sotalol|Betapace|KR|sotalol",
+"Sparfloxacin|Zagam|KR|",
+"Sulfamethoxazole and Trimethoprim|Septra|SR|cotrimoxazol trimetoprima sulfametoxazol",
+"Sulpiride|Dogmatil|KR|sulpirida",
+"Sultopride|Barnetil|KR|",
+"Sunitinib|Sutent|PR|sunitinib",
+"Tacrolimus|Prograf|PR|tacrolimus",
+"Tamoxifen|Nolvadex|PR|tamoxifeno",
+"Tazemetostat|Tazverik|PR|",
+"Tebentafusp|Kimmtrak|PR|",
+"Telaprevir|Incivo|CR|",
+"Telavancin|Vibativ|PR|",
+"Telithromycin|Ketek|PR|telitromicina",
+"Terbutaline|Brethine|SR|terbutalina",
+"Terfenadine|Seldane|KR|terfenadina",
+"Terlipressin|Teripress|KR|terlipresina",
+"Terodiline|Micturin|KR|",
+"Tetrabenazine|Nitoman|PR|tetrabenazina",
+"Thioridazine|Mellaril|KR|tioridazina",
+"Tiapride|Tiapridal|PR|tiaprida",
+"Tipiracil/Trifluridine|Lonsurf|PR|",
+"Tizanidine|Zanaflex|PR|tizanidina",
+"Tolterodine|Detrol|PR|tolterodina",
+"Toremifene|Fareston|PR|",
+"Torsemide (Torasemide)|Demadex|CR|torasemida",
+"Tramadol|Crispin|PR|tramadol",
+"Trazodone|Desyrel|CR|trazodona",
+"Triclabendazole|Egaten|PR|",
+"Trimipramine|Surmontil|PR|trimipramina",
+"Tropisetron|Navoban|PR|",
+"Valbenazine|Ingrezza|PR|",
+"Vandetanib|Caprelsa|KR|",
+"Vardenafil|Levitra|PR|vardenafilo",
+"Vemurafenib|Zelboraf|PR|",
+"Venlafaxine|Effexor|PR|venlafaxina",
+"Vernakalant|Brinavess|PR|vernakalant",
+"Vilanterol/fluticasone furoate|Breo Ellipta|SR|",
+"Voclosporin|Lupkynis|PR|",
+"Voriconazole|VFend|CR|voriconazol",
+"Vorinostat|Zolinza|PR|",
+"Xylometazoline (Xylomethazoline)|Sinosil|SR|xilometazolina",
+"Ziprasidone|Geodon|CR|ziprasidona",
+"Zotepine|Losizopilon|PR|",
+"Zuclopenthixol (Zuclopentixol)|Cisordinol|PR|zuclopentixol"
+  ];
+
+  // Español | comerciales | uso | clase | clave en lista QT | nota
+  var BR = [
+"Ajmalina|Gilurytmal|Antiarrítmico clase 1A (bloqueador de Na)|I||",
+"Allapinin|Allapinine, Glialin, Lappaconite Hydrobromide|Antiarrítmico clase 1C (bloqueador de Na)|IIb||",
+"Etacizina|Ethacizine, Etacizin, Etmozin|Antiarrítmico clase 1C (bloqueador de Na)|IIb||",
+"Flecainida|Tambocor|Antiarrítmico clase 1C (bloqueador de Na)|I|flecainide|",
+"Pilsicainida|Sunrhythm|Antiarrítmico clase 1C (bloqueador de Na)|I|pilsicainide|",
+"Procainamida|Procan, Pronestyl|Antiarrítmico clase 1A (bloqueador de Na)|I|procainamide|",
+"Propafenona|Rythmol|Antiarrítmico clase 1C (bloqueador de Na)|IIa|propafenone|",
+"Amitriptilina|Elavil, Sarotex, Tryptizol|Antidepresivo tricíclico|IIa|amitriptyline|",
+"Clomipramina|Anafranil, Anafril|Antidepresivo tricíclico|IIa|clomipramine|",
+"Desipramina|Norpramin, Pentofran|Antidepresivo tricíclico|IIa|desipramine|",
+"Litio|Eskalith|Antidepresivo|IIb|lithium|",
+"Loxapina|Cloxazepine, Loxitane|Antipsicótico|IIa||",
+"Nortriptilina|Nortrilen, Pamelor|Antidepresivo tricíclico|IIa|nortriptyline|",
+"Oxcarbazepina|Trileptal|Antiepiléptico|IIa||Derivado estructural de la carbamazepina, que está en la lista de fármacos a evitar preferentemente.",
+"Trifluoperazina|Fluoperazine, Stelazine|Antipsicótico (fenotiazina)|IIa||",
+"Bupivacaína|Marcaine, Sensorcaine|Anestésico / analgésico|IIa||",
+"Procaína|Procaine-Penicillin, Novocain|Analgésico|IIa||",
+"Propofol|Diprivan|Anestésico|IIa|propofol|La infusión prolongada se asoció especialmente a efectos adversos. Con las precauciones adecuadas, la anestesia con propofol suele poder hacerse de forma segura.",
+"Acetilcolina||Colinérgico / vasoespástico intracoronario|IIa||",
+"Alcohol||Sobredosis / bebida|IIb||",
+"Cannabis||Sustancia recreativa / droga ilícita|IIb||",
+"Cocaína|Cocaine|Droga ilícita / anestésico|IIa|cocaine|",
+"Ergonovina|Ergotrate|Vasoespástico intracoronario|IIb||"
+  ];
+
+  var QT_TXT = { KR: "Riesgo conocido de torsades de pointes", PR: "Riesgo posible", CR: "Riesgo condicional", SR: "Riesgo especial" };
+  var QT_SEV = { KR: "k1", CR: "k2", PR: "k3", SR: "k4" };
+  var BR_CLS = {
+    "I": { sev: "k1", txt: "Evidencia u opinión convincente" },
+    "IIa": { sev: "k2", txt: "Evidencia u opinión menos clara" },
+    "IIb": { sev: "k3", txt: "Evidencia u opinión contradictoria" }
+  };
+  var TABS = {
+    qt: {
+      label: "QT largo congénito",
+      examples: ["ondansetrón", "azitromicina", "amiodarona"],
+      legend: [["KR", "Riesgo conocido de torsades de pointes."], ["CR", "Riesgo condicional (según dosis, interacciones o condiciones del paciente)."], ["PR", "Riesgo posible."], ["SR", "Riesgo especial, relevante en QT largo congénito."]],
+      src: "Fuente: CredibleMeds, \"Medicamentos que deben evitar pacientes con QT prolongado congénito\" (generada el 6/2/2025, lista revisada el 2/12/2024). Todos los fármacos de esta lista deben evitarse si es posible en pacientes con diagnóstico o sospecha de QT largo congénito."
+    },
+    br: {
+      label: "Brugada",
+      examples: ["propofol", "flecainida", "amitriptilina"],
+      legend: [["Clase I", "Evidencia u opinión convincente."], ["Clase IIa", "Evidencia u opinión menos clara."], ["Clase IIb", "Evidencia u opinión contradictoria."]],
+      src: "Fuente: lista de medicamentos a evitar en síndrome de Brugada cargada en este proyecto. Es una lista breve, con las clases de recomendación que figuran en el documento original."
+    }
+  };
+
+  function norm(s) { return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  var DB = QT.map(function (l) {
+    var p = l.split("|");
+    return { g: p[0], qb: p[1] || "", qt: p[2], alias: p[3] || "", br: null };
+  });
+  BR.forEach(function (l) {
+    var p = l.split("|");
+    var br = { es: p[0], brands: p[1] || "", use: p[2], cls: p[3], note: p[5] || "" };
+    var key = p[4], hit = null;
+    if (key) {
+      for (var i = 0; i < DB.length; i++) { if (DB[i].g.toLowerCase().indexOf(key) === 0) { hit = DB[i]; break; } }
+    }
+    if (hit) { hit.br = br; }
+    else { DB.push({ g: p[0], qb: "", qt: null, alias: "", br: br }); }
+  });
+  DB.forEach(function (e) {
+    e.hay = " " + norm([e.g, e.alias, e.qb, e.br ? e.br.es : "", e.br ? e.br.brands : ""].join(" "));
+  });
+
+  function view(e, tab) {
+    if (tab === "qt") return { name: e.g, alias: e.alias && norm(e.alias) !== norm(e.g) ? e.alias : "", brands: e.qb };
+    var other = e.qt && norm(e.g) !== norm(e.br.es) ? e.g : "";
+    return { name: e.br.es, alias: other, brands: e.br.brands };
+  }
+  var LISTS = { qt: [], br: [] };
+  DB.forEach(function (e) {
+    if (e.qt) { var v = view(e, "qt"); LISTS.qt.push({ e: e, v: v, n: norm(v.name), a: norm(v.alias) }); }
+    if (e.br) { var w = view(e, "br"); LISTS.br.push({ e: e, v: w, n: norm(w.name), a: norm(w.alias) }); }
+  });
+  ["qt", "br"].forEach(function (t) { LISTS[t].sort(function (a, b) { return a.n < b.n ? -1 : a.n > b.n ? 1 : 0; }); });
+
+  var qEl = document.getElementById("q"), clr = document.getElementById("clr"), listEl = document.getElementById("list");
+  var countEl = document.getElementById("count"), exEl = document.getElementById("ex");
+  var tab = "qt", shown = 40, STEP = 40;
+
+  function rank(it, q) {
+    if (!q) return 0;
+    if (it.n.indexOf(q) === 0 || it.a.indexOf(q) === 0) return 0;
+    if (it.e.hay.indexOf(" " + q) !== -1) return 1;
+    return 2;
+  }
+
+  function statusHtml(e, t) {
+    if (t === "qt") {
+      return '<div class="badge ' + QT_SEV[e.qt] + '"><small>Riesgo</small>' + e.qt + '</div>';
+    }
+    return '<div class="badge ' + BR_CLS[e.br.cls].sev + '"><small>Clase</small>' + e.br.cls + '</div>';
+  }
+  function card(it, t) {
+    var e = it.e, v = it.v, state, det;
+    if (t === "qt") { state = "Evitar si es posible"; det = QT_TXT[e.qt] + "."; }
+    else { state = "Evitar"; det = BR_CLS[e.br.cls].txt + ". " + e.br.use + "." + (e.br.note ? " " + e.br.note : ""); }
+    return '<article class="card drug">' + statusHtml(e, t) + '<div class="dbody"><div class="dname">' + esc(v.name) +
+      (v.alias ? ' <span class="dalias">· ' + esc(v.alias) + '</span>' : '') + '</div>' +
+      (v.brands ? '<div class="dbrand">' + esc(v.brands) + '</div>' : '') +
+      '<div class="dstate">' + state + '</div><div class="ddet">' + esc(det) + '</div></div></article>';
+  }
+
+  function otherHint(q) {
+    var o = tab === "qt" ? "br" : "qt";
+    var hit = null;
+    for (var i = 0; i < LISTS[o].length; i++) { if (LISTS[o][i].e.hay.indexOf(q) !== -1) { hit = LISTS[o][i]; break; } }
+    if (!hit) return "";
+    var what = o === "br" ? "Brugada (Clase " + hit.e.br.cls + ")" : "QT largo (" + hit.e.qt + ")";
+    return '<button class="btn" type="button" data-tab="' + o + '">Sí figura en ' + what + '. Ver</button>';
+  }
+
+  function render() {
+    var raw = qEl.value.trim(), q = norm(raw);
+    clr.hidden = !raw;
+    var all = LISTS[tab];
+    var res = all.filter(function (it) { return !q || it.e.hay.indexOf(q) !== -1; });
+    if (q) {
+      res = res.map(function (it, i) { return { it: it, r: rank(it, q), i: i }; })
+        .sort(function (a, b) { return a.r - b.r || a.i - b.i; }).map(function (x) { return x.it; });
+    }
+    countEl.innerHTML = q ? "<b>" + res.length + "</b> de " + all.length + " fármacos" : "<b>" + all.length + "</b> fármacos en la lista";
+    exEl.innerHTML = TABS[tab].examples.map(function (x) { return '<button type="button" data-ex="' + x + '">' + x + '</button>'; }).join("");
+    if (!res.length) {
+      listEl.innerHTML = '<div class="card empty"><b>"' + esc(raw) + '" no figura en la lista de ' + TABS[tab].label + '</b>' +
+        '<p>Eso no significa que sea seguro: muchos fármacos no fueron evaluados. Revisá la ortografía o probá con el nombre comercial.</p>' + otherHint(q) + '</div>';
+      return;
+    }
+    var html = res.slice(0, shown).map(function (it) { return card(it, tab); }).join("");
+    if (res.length > shown) html += '<button class="more" type="button" id="more">Mostrar más (' + (res.length - shown) + ')</button>';
+    listEl.innerHTML = html;
+  }
+
+  function setTab(t) {
+    tab = t; shown = STEP;
+    document.getElementById("tab-qt").setAttribute("aria-selected", t === "qt" ? "true" : "false");
+    document.getElementById("tab-br").setAttribute("aria-selected", t === "br" ? "true" : "false");
+    document.getElementById("legend").innerHTML = TABS[t].legend.map(function (r) { return "<dt>" + r[0] + "</dt><dd>" + r[1] + "</dd>"; }).join("");
+    document.getElementById("src").textContent = TABS[t].src;
+    render();
+  }
+
+  qEl.addEventListener("input", function () { shown = STEP; render(); });
+  clr.addEventListener("click", function () { qEl.value = ""; shown = STEP; render(); qEl.focus(); });
+  document.addEventListener("click", function (ev) {
+    var t = ev.target.closest("[data-tab]"); if (t) { setTab(t.getAttribute("data-tab")); return; }
+    var x = ev.target.closest("[data-ex]"); if (x) { qEl.value = x.getAttribute("data-ex"); shown = STEP; render(); return; }
+    if (ev.target.closest("#more")) { shown += STEP; render(); }
+  });
+  document.getElementById("copy").addEventListener("click", function () {
+    var cp = document.getElementById("mailcp"), old = cp.innerHTML, txt = document.getElementById("mailtxt");
+    var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg>';
+    function done() { cp.innerHTML = CHECK; setTimeout(function () { cp.innerHTML = old; }, 1600); }
+    function sel() { var r = document.createRange(); r.selectNodeContents(txt); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    try { navigator.clipboard.writeText(txt.textContent).then(done, sel); } catch (err) { sel(); }
+  });
+  setTab("qt");
+})();
+</script>
+
+</body></html>
